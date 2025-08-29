@@ -39,7 +39,7 @@ pub fn main() {
 }
 ```
 
-Further documentation can be found at <https://hexdocs.pm/akivili>.
+Further documentation can be found at <https://hexdocs.pm/akivili>. (not yet lmao thanks `gleam new`)
 
 ## Development
 
@@ -56,4 +56,4 @@ TBD
 
 MIT
 
-#### Made with 💜 for [🗑️](https://honkai-star-rail.fandom.com/wiki/Trailblazer)``
+#### Made with 💜 for [🗑️](https://honkai-star-rail.fandom.com/wiki/Trailblazer)
