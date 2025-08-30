@@ -34,4 +34,51 @@ Right now, the priority would be to ensure that both Flopper and Rizzabel can be
 
 Afterwards, we'll need to add session management and authentications through JWTs (i think). Then we can start thinking about lexicon support.
 
-All other features follow suit as and when the needs arise. Failing that, [we refer to this list](https://github.com/bluesky-social/atproto/discussions/2415)
+All other features follow suit as and when the needs arise. Failing that, [we refer to this discussion](https://github.com/bluesky-social/atproto/discussions/2415).
+
+## Example code
+
+This section exists because I think that ergonomics is something that we need to consider early on as well. Downstream consumers must be able to use existing and expected patterns when building their own apps.
+
+A more complete example: (this is absolutely not valid gleam code)
+
+```gleam
+// repeat_recent_post.gleam
+import akivili/client.{new_client, new_session, CredentialSessionOpts}
+import akivili/lexicon
+
+let identifier = "sylfr.dev"
+let service_url = "pds.sylfr.dev"
+let app_password = "abcd-1234-wxyz-5678"
+
+pub fn main() {
+  let assert OK(session) =
+    new_session()
+    |> client.with_session_opts(CredentialSessionOpts(service_url))
+
+  let assert Ok(authenticated_client) =
+    new_client()
+    |> client.with_session(session)
+    |> client.with_credentials(identifier, app_password)
+    |> client.login()
+
+  let repo_records = authenticated_client.list_records(lexicon.app.bsky.feed.post)
+  let most_recent_post = authenticated_client.get_record(repo_records).first
+
+  echo most_recent_post.text // console logs the text on the most recent post.
+
+  let new_post = client.BskyPostOpts(text: "My most recent post contained the following text: " <> most_recent_post.text)
+
+  post_res = authenticated_client.post(new_post)
+
+  case post_res {
+    Ok(_) -> {
+      // do something with the Ok
+    }
+    Error(_) -> {
+      // handle the error appropriately
+    }
+  }
+}
+
+```
