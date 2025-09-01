@@ -10,7 +10,13 @@ pub type Agent {
 }
 
 pub type Repo {
-  Repo(did: String, head: String, rev: String, active: Bool, status: String)
+  Repo(
+    did: String,
+    head: String,
+    rev: String,
+    active: Bool,
+    status: Option(String),
+  )
 }
 
 fn repo_decoder() -> decode.Decoder(Repo) {
@@ -18,7 +24,11 @@ fn repo_decoder() -> decode.Decoder(Repo) {
   use head <- decode.field("head", decode.string)
   use rev <- decode.field("rev", decode.string)
   use active <- decode.field("active", decode.bool)
-  use status <- decode.optional_field("status", "", decode.string)
+  use status <- decode.optional_field(
+    Some("status"),
+    None,
+    decode.optional(decode.string),
+  )
   decode.success(Repo(did:, head:, rev:, active:, status:))
 }
 
